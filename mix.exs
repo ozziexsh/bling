@@ -8,7 +8,7 @@ defmodule Bling.MixProject do
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      description: "",
+      description: "Add recurring billing to your Phoenix application",
       package: [
         licenses: ["MIT"],
         links: %{
