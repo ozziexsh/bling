@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Billing Portal</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="csrf-token" content={Phoenix.Controller.get_csrf_token()} />
+        <meta name="stripe-pk" content={Application.get_env(:stripity_stripe, :public_key)} />
+        <link phx-track-static rel="stylesheet" href="/assets/bling/style.css" />
+        <script phx-track-static src="https://js.stripe.com/v3/"></script>
+        <script phx-track-static type="module" src="/assets/bling/bling.js"></script>
+    </head>
+
+    <body class="bg-zinc-50">
+        <%= @inner_content %>
+    </body>
+</html>

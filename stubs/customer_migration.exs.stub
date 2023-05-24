@@ -1,0 +1,14 @@
+defmodule <%= @module_name %>.Repo.Migrations.<%= @schema_name %>CustomerColumns do
+  use Ecto.Migration
+
+  def change do
+    alter table(:<%= @table_name %>) do
+      add :stripe_id, :string
+      add :payment_id, :string, null: true
+      add :payment_type, :string, null: true
+      add :payment_last_four, :string, size: 4, null: true
+    end
+
+    create unique_index(:<%= @table_name %>, [:stripe_id])
+  end
+end

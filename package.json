@@ -1,0 +1,36 @@
+{
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.1.0",
+    "@tsconfig/svelte": "^4.0.1",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.23",
+    "prettier": "^2.8.8",
+    "svelte-check": "^3.2.0",
+    "svelte-preprocess": "^5.0.3",
+    "tailwindcss": "^3.3.1",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.1"
+  },
+  "dependencies": {
+    "@types/stripe-v3": "^3.1.28",
+    "dayjs": "^1.11.7",
+    "phoenix": "^1.7.2",
+    "svelte": "^3.58.0",
+    "wretch": "^2.5.2"
+  },
+  "scripts": {
+    "dev": "vite build --watch"
+  },
+  "type": "module",
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "useTabs": false,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "printWidth": 80,
+    "arrowParens": "avoid",
+    "htmlWhitespaceSensitivity": "ignore",
+    "svelteIndentScriptAndStyle": false
+  }
+}

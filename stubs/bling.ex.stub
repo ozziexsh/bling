@@ -1,0 +1,41 @@
+defmodule <%= @module_name %>.Bling do
+  use Bling,
+    repo: <%= @module_name %>.Repo,
+    customers: [
+      # user: <%= @module_name %>.Accounts.User
+    ],
+    subscription: <%= @module_name %>.Subscriptions.Subscription,
+    subscription_item: <%= @module_name %>.Subscriptions.SubscriptionItem
+
+  def to_stripe_params(customer) do
+    # pass any valid Stripe.Customer.create/2 params here
+    # e.g. %{name: user.name, email: user.email}
+    case customer do
+      # %MyApp.Accounts.User{} -> %{email: customer.email}
+      _ -> %{}
+    end
+  end
+
+  def tax_rate_ids(_customer), do: []
+
+  def handle_stripe_webhook_event(%Stripe.Event{} = event) do
+    case event.type do
+      "invoice.payment_action_required" ->
+        # todo: send email
+        nil
+
+      "invoice.payment.failed" ->
+        # todo: send email
+        nil
+
+      _ ->
+        nil
+    end
+
+    :ok
+  end
+
+  def can_manage_billing?(_conn, _customer) do
+    false
+  end
+end
