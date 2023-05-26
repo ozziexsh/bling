@@ -10,6 +10,8 @@ This package is almost entirely headless, meaning you are free to implement your
 - Changing plans
 - Cancelling & resuming
 - Subscription trials
+- Multiple subscriptions per customer
+- Subscriptions with quantities (per-seat)
 - Checking subscription status
   - Is the subscription active?
   - Is it on a trial?
