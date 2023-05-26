@@ -98,6 +98,7 @@ defmodule MyApp.Accounts.User do
     # ...
 
     field :stripe_id, :string
+    field :trial_ends_at, :utc_datetime
     field :payment_type, :string
     field :payment_id, :string
     field :payment_last_four, :string
@@ -268,6 +269,7 @@ defmodule MyApp.Accounts.User do
     # ...
 
     field :stripe_id, :string
+    field :trial_ends_at, :utc_datetime
     field :payment_type, :string
     field :payment_id, :string
     field :payment_last_four, :string
@@ -489,6 +491,41 @@ Bling.Customers.create_subscription(
   stripe: %{ trial_period_days: 7 },
 )
 ```
+
+You can check the status of a trial with these methods:
+
+```elixir
+Bling.Subscriptions.trial?(subscription)
+Bling.Customers.trial?(customer)
+
+# with explicit plan names
+Bling.Subscriptions.trial?(subscription, plan: "default")
+Bling.Customers.trial?(customer, plan: "default")
+```
+
+## No card upfront trials
+
+Also known as "generic trials".
+
+When creating a subscription with a trial, it requires a payment method to be on the customer. If you'd like to give them a trial without first setting up a payment method, you can set the `trial_ends_at` property on the customer:
+
+```elixir
+ends_at = DateTime.utc_now() |> DateTime.add(7, :day) |> DateTime.truncate(:second)
+
+customer = MyApp.Accounts.get_by!(1)
+
+customer
+|> Ecto.Changeset.change(%{
+  trial_ends_at: ends_at
+})
+|> MyApp.Repo.update!()
+```
+
+You can then use the `Customer.trial?/2` and `Customer.generic_trial?/1` methods to check if the customer is on a trial.
+
+`Customer.trial?/2` will check for a generic trial on the customer or if a customer has a subscription on a trial.
+
+`Customer.generic_trial?/1` will only check the `trial_ends_at` on the customer.
 
 ### Multiple subscriptions
 
