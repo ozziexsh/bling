@@ -5,6 +5,7 @@ defmodule BlingTest.User do
     field(:email, :string)
 
     field(:stripe_id, :string)
+    field(:trial_ends_at, :utc_datetime)
     field(:payment_type, :string)
     field(:payment_id, :string)
     field(:payment_last_four, :string)

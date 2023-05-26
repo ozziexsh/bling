@@ -7,11 +7,15 @@ defmodule <%= @module_name %>.Bling do
     subscription: <%= @module_name %>.Subscriptions.Subscription,
     subscription_item: <%= @module_name %>.Subscriptions.SubscriptionItem
 
+  def can_manage_billing?(_conn, _customer) do
+    false
+  end
+
   def to_stripe_params(customer) do
     # pass any valid Stripe.Customer.create/2 params here
     # e.g. %{name: user.name, email: user.email}
     case customer do
-      # %MyApp.Accounts.User{} -> %{email: customer.email}
+      # %<%= @module_name %>.Accounts.User{} -> %{email: customer.email}
       _ -> %{}
     end
   end
@@ -33,9 +37,5 @@ defmodule <%= @module_name %>.Bling do
     end
 
     :ok
-  end
-
-  def can_manage_billing?(_conn, _customer) do
-    false
   end
 end

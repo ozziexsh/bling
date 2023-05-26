@@ -8,6 +8,7 @@ defmodule Demo.Repo.Migrations.CreateUsersAuthTables do
       add :payment_type, :string, null: true
       add :payment_last_four, :string, size: 4, null: true
       add :stripe_id, :string
+      add :trial_ends_at, :utc_datetime
 
       timestamps()
     end

@@ -39,13 +39,13 @@ defmodule Bling.Customers do
   end
 
   @doc """
-  Returns whether or not the user is subscribed to a plan, and that plan is valid.
+  Returns whether or not the customer is subscribed to a plan, and that plan is valid.
 
   ## Examples
-      # checks if the user is subscribed to the default plan
+      # checks if the customer is subscribed to the default plan
       Bling.Customers.subscribed?(customer)
 
-      # checks if the user is subscribed to a specific plan
+      # checks if the customer is subscribed to a specific plan
       Bling.Customers.subscribed?(customer, plan: "pro")
   """
   def subscribed?(customer, opts \\ []) do
@@ -59,13 +59,13 @@ defmodule Bling.Customers do
   end
 
   @doc """
-  Returns whether or not the user is subscribed to a specific product and the subscription is valid.
+  Returns whether or not the customer is subscribed to a specific product and the subscription is valid.
 
   ## Examples
-      # checks if the user is subscribed to a product on the default plan
+      # checks if the customer is subscribed to a product on the default plan
       Bling.Customers.subscribed_to_product?(customer, "prod_123")
 
-      # checks if the user is subscribed to a product on a specific plan
+      # checks if the customer is subscribed to a product on a specific plan
       Bling.Customers.subscribed_to_product?(customer, "prod_123", plan: "pro")
   """
   def subscribed_to_product?(customer, product, opts \\ []) do
@@ -80,13 +80,13 @@ defmodule Bling.Customers do
   end
 
   @doc """
-  Returns whether or not the user is subscribed to a specific price and the subscription is valid.
+  Returns whether or not the customer is subscribed to a specific price and the subscription is valid.
 
   ## Examples
-      # checks if the user is subscribed to a price on the default plan
+      # checks if the customer is subscribed to a price on the default plan
       Bling.Customers.subscribed_to_price?(customer, "price_123")
 
-      # checks if the user is subscribed to a price on a specific plan
+      # checks if the customer is subscribed to a price on a specific plan
       Bling.Customers.subscribed_to_price?(customer, "price_123", plan: "pro")
   """
   def subscribed_to_price?(customer, price, opts \\ []) do
@@ -98,6 +98,41 @@ defmodule Bling.Customers do
     |> Enum.filter(&(&1.name == name))
     |> Enum.flat_map(fn sub -> Enum.map(sub.subscription_items, & &1.stripe_price_id) end)
     |> Enum.member?(price)
+  end
+
+  @doc """
+  Returns true if the customer is on a generic trial or if the specified subscription is on a trial.
+
+  ## Examples
+
+      # checks trial_ends_at on customer and "default" subscription plan
+      Bling.Customers.trial?(customer)
+
+      # checks trial_ends_at on customer and "swimming" subscription plan
+      Bling.Customers.trial?(customer, plan: "swimming")
+  """
+  def trial?(customer, opts \\ []) do
+    subscription = subscription(customer, opts)
+
+    cond do
+      generic_trial?(customer) -> true
+      is_nil(subscription) -> false
+      Subscriptions.trial?(subscription) -> true
+      true -> false
+    end
+  end
+
+  @doc """
+  Returns whether the customer is on a generic trial.
+
+  Checks the `trial_ends_at` column on the customer.
+  """
+  def generic_trial?(%{trial_ends_at: nil} = _customer), do: false
+
+  def generic_trial?(customer) do
+    ends_at = DateTime.compare(customer.trial_ends_at, DateTime.utc_now())
+
+    ends_at == :gt
   end
 
   @doc """
@@ -156,7 +191,7 @@ defmodule Bling.Customers do
   end
 
   @doc """
-  Returns the defauly payment method for a user, or nil. The payment method returned is a Bling.PaymentMethod struct.
+  Returns the defauly payment method for a customer, or nil. The payment method returned is a Bling.PaymentMethod struct.
   """
   def default_payment_method(customer) do
     result =

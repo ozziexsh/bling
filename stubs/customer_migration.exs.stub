@@ -3,7 +3,8 @@ defmodule <%= @module_name %>.Repo.Migrations.<%= @schema_name %>CustomerColumns
 
   def change do
     alter table(:<%= @table_name %>) do
-      add :stripe_id, :string
+      add :stripe_id, :string, null: true
+      add :trial_ends_at, :utc_datetime, null: true
       add :payment_id, :string, null: true
       add :payment_type, :string, null: true
       add :payment_last_four, :string, size: 4, null: true
