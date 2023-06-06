@@ -1,4 +1,4 @@
-defmodule Bling.PaymentMethod do
+defmodule Bling.Stripe.PaymentMethod do
   @moduledoc """
   A struct to normalize stripe sources.
   """
@@ -16,7 +16,7 @@ defmodule Bling.PaymentMethod do
   Given a stripe source, card, or payment method, returns a Bling.PaymentMethod struct or nil.
   """
   def from_source(%Stripe.Card{} = source) do
-    %Bling.PaymentMethod{
+    %Bling.Stripe.PaymentMethod{
       id: source.id,
       type: "card",
       last_four: source.last4,
@@ -25,7 +25,7 @@ defmodule Bling.PaymentMethod do
   end
 
   def from_source(%Stripe.Source{} = source) do
-    %Bling.PaymentMethod{
+    %Bling.Stripe.PaymentMethod{
       id: source.id,
       type: source.type,
       last_four: if(source.type == "card", do: source.card.last4, else: nil),
@@ -34,7 +34,7 @@ defmodule Bling.PaymentMethod do
   end
 
   def from_source(%Stripe.PaymentMethod{} = source) do
-    %Bling.PaymentMethod{
+    %Bling.Stripe.PaymentMethod{
       id: source.id,
       type: source.type,
       last_four: if(source.type == "card", do: source.card.last4, else: nil),

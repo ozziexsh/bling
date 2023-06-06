@@ -36,6 +36,7 @@ defmodule Bling do
 
   defmacro __using__(opts) do
     opts = Keyword.put(opts, :caller, __CALLER__.module)
+    adapter = opts[:adapter] || Bling.Stripe
 
     quote do
       @customers unquote(opts[:customers])
@@ -62,12 +63,6 @@ defmodule Bling do
         end)
       end
 
-      def customer_from_stripe_id(stripe_id) do
-        Enum.find_value(customers(), fn {_, schema} ->
-          repo().get_by(schema, stripe_id: stripe_id)
-        end)
-      end
-
       for entity <-
             [@subscription, @subscription_item, @receipt | Keyword.values(@customers)]
             |> Enum.filter(fn x -> not is_nil(x) end) do
@@ -76,6 +71,8 @@ defmodule Bling do
           def bling(_entity), do: unquote(opts[:caller])
         end
       end
+
+      use unquote(adapter)
     end
   end
 end

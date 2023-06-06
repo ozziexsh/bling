@@ -1,4 +1,4 @@
-defmodule Bling.StripeWebhookHandler do
+defmodule Bling.Stripe.StripeWebhookHandler do
   @moduledoc """
   Handles Stripe webhooks for:
   - customer.deleted
@@ -45,8 +45,8 @@ defmodule Bling.StripeWebhookHandler do
       config :stripity_stripe, api_key: "...", public_key: "...", webhook_key: "..."
   """
 
-  alias Bling.Customers
-  alias Bling.Subscriptions
+  alias Bling.Stripe.Customers
+  alias Bling.Stripe.Subscriptions
 
   defmacro __using__(opts) do
     quote do

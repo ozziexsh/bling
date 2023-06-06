@@ -1,4 +1,4 @@
-defmodule Bling.Subscriptions do
+defmodule Bling.Stripe.Subscriptions do
   @moduledoc """
   Module to interact with Bling subscriptions. Most functions expect the ecto subscription struct
   as the first argument, and will return the updated subscription with subscription items preloaded.

@@ -1,6 +1,6 @@
 defmodule BlingTest.SubscriptionsTest do
   use BlingTest.RepoCase
-  alias Bling.{Subscriptions, Customers}
+  alias Bling.Stripe.{Subscriptions, Customers}
   alias BlingTest.{Repo, Subscription, SubscriptionItem}
 
   @return_url "http://localhost:4000/finalize"

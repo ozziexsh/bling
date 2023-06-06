@@ -1,4 +1,4 @@
-defmodule Bling.Controllers.Layouts do
+defmodule Bling.Stripe.Controllers.Layouts do
   @moduledoc false
 
   use Phoenix.Component

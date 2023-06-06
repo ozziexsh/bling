@@ -1,5 +1,5 @@
 defmodule BlingTest.CustomersTest do
-  alias Bling.Customers
+  alias Bling.Stripe.Customers
 
   use BlingTest.RepoCase
 

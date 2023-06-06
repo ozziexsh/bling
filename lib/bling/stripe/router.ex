@@ -1,4 +1,4 @@
-defmodule Bling.Router do
+defmodule Bling.Stripe.Router do
   @moduledoc """
   Provides a macro to register the routes for Bling.
   """
@@ -17,7 +17,7 @@ defmodule Bling.Router do
   defmacro bling_routes(prefix \\ "/billing") do
     quote do
       pipeline :bling_pipeline do
-        plug(:put_root_layout, {Bling.Controllers.Layouts, :root})
+        plug(:put_root_layout, {Bling.Stripe.Controllers.Layouts, :root})
       end
 
       scope unquote(prefix), as: false, alias: false do
@@ -30,14 +30,14 @@ defmodule Bling.Router do
 
           Phoenix.Router.get(
             "/finalize",
-            Bling.Controllers.BlingController,
+            Bling.Stripe.Controllers.BlingController,
             :finalize,
             Keyword.merge(opts, as: :bling_finalize)
           )
 
           Phoenix.Router.post(
             "/payment-method",
-            Bling.Controllers.BlingController,
+            Bling.Stripe.Controllers.BlingController,
             :store_payment_method,
             Keyword.merge(opts, as: :bling_store_payment_method)
           )

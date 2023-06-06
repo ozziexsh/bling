@@ -1,11 +1,11 @@
-defmodule Bling.Controllers.BlingController do
+defmodule Bling.Stripe.Controllers.BlingController do
   @moduledoc false
 
   use Phoenix.Controller,
     formats: [:html, :json],
-    layouts: [html: Bling.Controllers.Layouts]
+    layouts: [html: Bling.Stripe.Controllers.Layouts]
 
-  plug(Bling.Plugs.AssignCustomer)
+  plug(Bling.Stripe.Plugs.AssignCustomer)
 
   def finalize(conn, _params) do
     props = get_props(conn)
@@ -22,7 +22,7 @@ defmodule Bling.Controllers.BlingController do
   def store_payment_method(conn, params) do
     customer =
       conn.assigns.customer
-      |> Bling.Customers.update_default_payment_method(params["payment_method_id"])
+      |> Bling.Stripe.Customers.update_default_payment_method(params["payment_method_id"])
 
     conn |> assign(:customer, customer) |> json(%{props: get_props(conn)})
   end

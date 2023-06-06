@@ -1,10 +1,10 @@
-defmodule Bling.Customers do
+defmodule Bling.Stripe.Customers do
   @moduledoc """
   Module for interacting with Bling customers. Each method expects the first argument to be an ecto struct.
   """
 
-  alias Bling.PaymentMethod
-  alias Bling.Subscriptions
+  alias Bling.Stripe.PaymentMethod
+  alias Bling.Stripe.Subscriptions
   alias Bling.Entity
 
   @default_plan "default"

@@ -1,5 +1,5 @@
 defmodule BlingTest.StripeWebhookHandlerTest do
-  alias Bling.StripeWebhookHandler
+  alias Bling.Stripe.StripeWebhookHandler
   use BlingTest.RepoCase
 
   test "customer deleted" do

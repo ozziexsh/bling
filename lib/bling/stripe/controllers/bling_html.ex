@@ -1,4 +1,4 @@
-defmodule Bling.Controllers.BlingHTML do
+defmodule Bling.Stripe.Controllers.BlingHTML do
   @moduledoc false
 
   use Phoenix.Component

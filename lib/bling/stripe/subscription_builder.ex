@@ -1,4 +1,4 @@
-defmodule Bling.SubscriptionBuilder do
+defmodule Bling.Stripe.SubscriptionBuilder do
   @moduledoc false
 
   defstruct customer: nil,

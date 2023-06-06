@@ -22,10 +22,10 @@ defmodule Bling.Paddle.Customers do
 
   ## Examples
       # gets subscription with name "default"
-      subscription = Bling.Customers.subscription(customer)
+      subscription = Bling.Paddle.Customers.subscription(customer)
 
       # gets subscription with specific name
-      subscription = Bling.Customers.subscription(customer, plan: "pro")
+      subscription = Bling.Paddle.Customers.subscription(customer, plan: "pro")
   """
   def subscription(customer, opts \\ []) do
     name = name_from_opts(opts)
@@ -37,10 +37,10 @@ defmodule Bling.Paddle.Customers do
 
   ## Examples
       # checks if the customer is subscribed to the default plan
-      Bling.Customers.subscribed?(customer)
+      Bling.Paddle.Customers.subscribed?(customer)
 
       # checks if the customer is subscribed to a specific plan
-      Bling.Customers.subscribed?(customer, plan: "pro")
+      Bling.Paddle.Customers.subscribed?(customer, plan: "pro")
   """
   def subscribed?(customer, opts \\ []) do
     name = name_from_opts(opts)
@@ -58,10 +58,10 @@ defmodule Bling.Paddle.Customers do
   ## Examples
 
       # checks trial_ends_at on customer and "default" subscription plan
-      Bling.Customers.trial?(customer)
+      Bling.Paddle.Customers.trial?(customer)
 
       # checks trial_ends_at on customer and "swimming" subscription plan
-      Bling.Customers.trial?(customer, plan: "swimming")
+      Bling.Paddle.Customers.trial?(customer, plan: "swimming")
   """
   def trial?(customer, opts \\ []) do
     subscription = subscription(customer, opts)

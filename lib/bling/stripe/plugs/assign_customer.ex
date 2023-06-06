@@ -1,4 +1,4 @@
-defmodule Bling.Plugs.AssignCustomer do
+defmodule Bling.Stripe.Plugs.AssignCustomer do
   @moduledoc false
 
   def init(opts), do: opts
@@ -33,7 +33,7 @@ defmodule Bling.Plugs.AssignCustomer do
     if customer.stripe_id do
       customer
     else
-      Bling.Customers.create_stripe_customer(customer)
+      Bling.Stripe.Customers.create_stripe_customer(customer)
     end
   end
 end

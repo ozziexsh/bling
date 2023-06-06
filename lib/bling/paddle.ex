@@ -1,4 +1,9 @@
 defmodule Bling.Paddle do
+  defmacro __using__(_opts) do
+    quote do
+    end
+  end
+
   def script_tags() do
     vendor_id = Application.get_env(:bling, :paddle)[:vendor_id]
     sandbox? = Application.get_env(:bling, :paddle)[:sandbox] || false
