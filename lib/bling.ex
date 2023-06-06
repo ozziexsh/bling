@@ -35,29 +35,20 @@ defmodule Bling do
   """
 
   defmacro __using__(opts) do
+    opts = Keyword.put(opts, :caller, __CALLER__.module)
+
     quote do
       @customers unquote(opts[:customers])
       @repo unquote(opts[:repo])
       @subscription unquote(opts[:subscription])
       @subscription_item unquote(opts[:subscription_item])
+      @receipt unquote(opts[:receipt])
 
-      for entity <- [@subscription, @subscription_item | Keyword.values(@customers)] do
-        defimpl Bling.Entity, for: entity do
-          def repo(_entity), do: unquote(opts[:repo])
-          def bling(_entity), do: unquote(__MODULE__)
-        end
-      end
-
-      @before_compile unquote(__MODULE__)
-    end
-  end
-
-  defmacro __before_compile__(_env) do
-    quote do
       def customers, do: @customers
       def repo, do: @repo
       def subscription, do: @subscription
       def subscription_item, do: @subscription_item
+      def receipt, do: @receipt
 
       def module_from_customer_type(type) do
         Enum.find_value(customers(), fn {name, mod} ->
@@ -75,6 +66,15 @@ defmodule Bling do
         Enum.find_value(customers(), fn {_, schema} ->
           repo().get_by(schema, stripe_id: stripe_id)
         end)
+      end
+
+      for entity <-
+            [@subscription, @subscription_item, @receipt | Keyword.values(@customers)]
+            |> Enum.filter(fn x -> not is_nil(x) end) do
+        defimpl Bling.Entity, for: entity do
+          def repo(_entity), do: unquote(opts[:repo])
+          def bling(_entity), do: unquote(opts[:caller])
+        end
       end
     end
   end

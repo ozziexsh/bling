@@ -47,7 +47,9 @@ defmodule Bling.MixProject do
       {:stripity_stripe, "~> 2.17"},
       {:postgrex, ">= 0.0.0", only: :test},
       {:faker, "~> 0.17", only: :test},
-      {:jason, "~> 1.4"}
+      {:jason, "~> 1.4"},
+      {:httpoison, "~> 2.0"},
+      {:php_serializer, "~> 2.0"}
     ]
   end
 
