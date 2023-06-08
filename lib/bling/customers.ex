@@ -5,7 +5,6 @@ defmodule Bling.Customers do
 
   alias Bling.PaymentMethod
   alias Bling.Subscriptions
-  alias Bling.Entity
 
   @default_plan "default"
 
@@ -15,7 +14,7 @@ defmodule Bling.Customers do
   Fetches all subscriptions for a customer.
   """
   def subscriptions(customer) do
-    repo = Entity.repo(customer)
+    repo = Bling.repo()
 
     customer
     |> repo.preload(subscriptions: [:subscription_items])
@@ -145,14 +144,14 @@ defmodule Bling.Customers do
   """
   def create_stripe_customer(customer, opts \\ []) do
     stripe_params = stripe_params(opts)
-    bling = Entity.bling(customer)
+    bling = Bling.bling()
     customer_metadata = Bling.Util.maybe_call({bling, :to_stripe_params, [customer]}, %{})
 
     params = Map.merge(customer_metadata, stripe_params)
 
     {:ok, stripe_customer} = Stripe.Customer.create(params)
 
-    repo = Entity.repo(customer)
+    repo = Bling.repo()
     customer |> change(%{stripe_id: stripe_customer.id}) |> repo.update!()
   end
 
@@ -222,7 +221,7 @@ defmodule Bling.Customers do
   Updates the customer's default payment method with the one stored in stripe.
   """
   def update_default_payment_method_from_stripe(customer) do
-    repo = Entity.repo(customer)
+    repo = Bling.repo()
     payment_method = default_payment_method(customer)
 
     case payment_method do
@@ -250,7 +249,7 @@ defmodule Bling.Customers do
   Updates the customers default payment method with the provided payment_method_id.
   """
   def update_default_payment_method(customer, payment_method_id) do
-    repo = Entity.repo(customer)
+    repo = Bling.repo()
 
     Stripe.Customer.update(customer.stripe_id, %{
       invoice_settings: %{default_payment_method: payment_method_id}
@@ -301,7 +300,7 @@ defmodule Bling.Customers do
     name = plan_from_opts(opts)
     stripe_params = stripe_params(opts)
     return_url = opts[:return_url]
-    repo = Entity.repo(customer)
+    repo = Bling.repo()
     prices = opts[:prices]
 
     items = prices |> Enum.map(fn {id, quantity} -> %{price: id, quantity: quantity} end)
@@ -403,22 +402,25 @@ defmodule Bling.Customers do
       |> Keyword.get(:prices, [])
       |> Enum.map(fn {price, quantity} -> %{price: price, quantity: quantity} end)
 
+    provided_sub_data = stripe_params |> Map.get(:subscription_data, %{})
+    provided_meta = provided_sub_data |> Map.get(:metadata, %{})
+
+    metadata =
+      Map.merge(provided_meta, %{
+        "name" => name
+      })
+
+    subscription_data =
+      provided_sub_data |> maybe_add_tax(customer) |> Map.merge(%{metadata: metadata})
+
     default_params = %{
       customer: customer.stripe_id,
       mode: "subscription",
       line_items: line_items,
-      subscription_data:
-        maybe_add_tax(
-          %{
-            metadata: %{
-              "name" => name
-            }
-          },
-          customer
-        )
+      subscription_data: subscription_data
     }
 
-    params = Map.merge(default_params, stripe_params)
+    params = Map.merge(stripe_params, default_params)
 
     {:ok, %Stripe.Session{} = session} = Stripe.Session.create(params)
 
@@ -436,7 +438,7 @@ defmodule Bling.Customers do
   end
 
   defp maybe_create_subscription(customer, stripe_subscription) do
-    repo = Entity.repo(customer)
+    repo = Bling.repo()
     existing = subscriptions(customer) |> Enum.find(&(&1.stripe_id == stripe_subscription.id))
 
     if existing do
@@ -471,7 +473,7 @@ defmodule Bling.Customers do
   defp stripe_params(opts), do: opts |> Keyword.get(:stripe, []) |> build_opts()
 
   defp maybe_add_tax(params, customer) do
-    bling = Entity.bling(customer)
+    bling = Bling.bling()
     tax_rates = Bling.Util.maybe_call({bling, :tax_rate_ids, [customer]}, [])
 
     cond do

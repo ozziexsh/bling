@@ -36,6 +36,13 @@ defmodule Bling.Router do
           )
 
           Phoenix.Router.post(
+            "/setup-payment",
+            Bling.Controllers.BlingController,
+            :setup_payment,
+            opts
+          )
+
+          Phoenix.Router.post(
             "/payment-method",
             Bling.Controllers.BlingController,
             :store_payment_method,

@@ -58,7 +58,7 @@ Add the module to your dependencies:
 ```elixir
 def deps do
   [
-    {:bling, "~> 0.2.0"},
+    {:bling, "~> 0.3.0"},
     {:stripity_stripe, "~> 2.17"}
   ]
 end
@@ -111,14 +111,15 @@ defmodule MyApp.Accounts.User do
 end
 ```
 
-We can then register this customer in our Bling module that was generated for us:
+We can then register all of our generated modules in the config:
 
 ```elixir
-# lib/my_app/bling.ex
-defmodule MyApp.Bling do
-  use Bling,
-    customers: [user: MyApp.Accounts.User]
-    # ...
+config :bling,
+  bling: MyApp.Bling,
+  repo: MyApp.Repo,
+  customers: [user: MyApp.Accounts.User],
+  subscription: MyApp.Subscriptions.Subscription,
+  subscription_item: MyApp.Subscriptions.SubscriptionItem
 ```
 
 We must enable route helpers:
@@ -134,7 +135,7 @@ defmodule MyAppWeb do
   # ...
 ```
 
-Open up your router file and add the Bling plug and routes. The `bling_routes/1` macro registers two routes:
+Open up your router file and add the Bling routes. The `bling_routes/1` macro registers two routes:
 
 - `GET /billing/:customer_type/:customer_id/finalize` - used to resolve payment and setup issues
 - `POST /billing/:customer_type/:customer_id/payment-method` - used to save a payment method to a customer, used by the finalize page
@@ -144,11 +145,6 @@ You can optionally pass a prefix to this macro to use instead of `/billing`:
 ```elixir
 defmodule MyAppWeb.Router do
   import Bling.Router
-
-  pipeline :browser do
-    # ... rest of plugs
-    plug Bling.Plug, bling: MyApp.Bling
-  end
 
   # ... your routes
 
@@ -162,7 +158,7 @@ defmodule MyAppWeb.Router do
 end
 ```
 
-Open up your endpoint file and add the stripe webhook handler that was generated during the install command:
+Open up your endpoint file and add the stripe webhook handler:
 
 ```elixir
 defmodule MyAppWeb.Endpoint do
@@ -171,7 +167,7 @@ defmodule MyAppWeb.Endpoint do
   # this MUST be added right BEFORE the parser
   plug Stripe.WebhookPlug,
     at: "/webhooks/stripe",
-    handler: MyAppWeb.StripeWebhookHandler,
+    handler: Bling.StripeWebhookHandler,
     secret: {Application, :get_env, [:stripity_stripe, :webhook_secret]}
 
   # this should already be present
@@ -201,17 +197,19 @@ When you are deploying, you should either commit the assets in `priv/static/asse
 
 ## Bling module
 
-The Bling module installed in your project has a few helpful methods for deriving information:
+The Bling module has a few helpful methods for deriving information:
 
 ```elixir
-MyApp.Accounts.User = MyApp.Bling.module_from_customer_type("user")
-"user" = MyApp.Bling.customer_type_from_struct(%MyApp.Accounts.User{})
+MyApp.Accounts.User = Bling.module_from_customer_type("user")
+"user" = Bling.customer_type_from_struct(%MyApp.Accounts.User{})
 
 # queries the registered customer modules for a matching stripe_id
-%MyApp.Accounts.User{} = MyApp.Bling.customer_from_stripe_id("cus_1234")
+%MyApp.Accounts.User{} = Bling.customer_from_stripe_id("cus_1234")
 ```
 
-You can also implement these methods in your `MyApp.Bling` module to extend functionality:
+## Project Bling module
+
+You can should also implement these methods in your `MyApp.Bling` module to extend functionality:
 
 - `def to_stripe_params(customer)`
   - return a map of valid `Stripe.Customer.create/2` params to create/update the customer with.
@@ -282,13 +280,10 @@ defmodule MyApp.Accounts.User do
 end
 ```
 
-We can then register this customer in our Bling module that was generated for us:
+We can then register this customer in our config:
 
 ```elixir
-defmodule MyApp.Bling do
-  use Bling,
-    customers: [user: MyApp.Accounts.User]
-    # ...
+config :bling, customers: [user: MyApp.Accounts.User]
 ```
 
 That's it!

@@ -19,7 +19,6 @@ defmodule Mix.Tasks.Bling.Install do
     copy_subscriptions_migration(project_directory, dep_directory, module_name)
     copy_subscription_schemas(project_directory, dep_directory, module_name)
     copy_bling_module(project_directory, dep_directory, module_name)
-    copy_stripe_webhook_handler(project_directory, dep_directory, module_name)
     Mix.Task.run("bling.assets")
 
     Mix.Shell.IO.info("""
@@ -76,19 +75,6 @@ defmodule Mix.Tasks.Bling.Install do
       Path.join([
         project_directory,
         "lib/#{module_folder}/bling.ex"
-      ])
-
-    Mix.Generator.copy_template(stub_path, final_path, module_name: module_name)
-  end
-
-  defp copy_stripe_webhook_handler(project_directory, dep_directory, module_name) do
-    stub_path = Path.join([dep_directory, "stubs/stripe_webhook_handler.ex.stub"])
-    module_folder = get_module_folder(module_name)
-
-    final_path =
-      Path.join([
-        project_directory,
-        "lib/#{module_folder}_web/stripe_webhook_handler.ex"
       ])
 
     Mix.Generator.copy_template(stub_path, final_path, module_name: module_name)

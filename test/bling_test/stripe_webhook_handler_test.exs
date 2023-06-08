@@ -22,7 +22,7 @@ defmodule BlingTest.StripeWebhookHandlerTest do
       }
     }
 
-    StripeWebhookHandler.handle_event(event, BlingTest.ExampleBling)
+    StripeWebhookHandler.handle_event(event)
 
     user = BlingTest.Repo.reload(user)
 
@@ -49,7 +49,7 @@ defmodule BlingTest.StripeWebhookHandlerTest do
       }
     }
 
-    StripeWebhookHandler.handle_event(event, BlingTest.ExampleBling)
+    StripeWebhookHandler.handle_event(event)
 
     user = BlingTest.Repo.reload(user)
 
@@ -87,7 +87,7 @@ defmodule BlingTest.StripeWebhookHandlerTest do
       }
     }
 
-    StripeWebhookHandler.handle_event(event, BlingTest.ExampleBling)
+    StripeWebhookHandler.handle_event(event)
 
     subscription = BlingTest.Subscription |> BlingTest.Repo.one!()
 
@@ -150,7 +150,7 @@ defmodule BlingTest.StripeWebhookHandlerTest do
       }
     }
 
-    StripeWebhookHandler.handle_event(event, BlingTest.ExampleBling)
+    StripeWebhookHandler.handle_event(event)
 
     subscription =
       BlingTest.Repo.reload(subscription) |> BlingTest.Repo.preload(:subscription_items)
@@ -193,7 +193,7 @@ defmodule BlingTest.StripeWebhookHandlerTest do
       }
     }
 
-    StripeWebhookHandler.handle_event(event, BlingTest.ExampleBling)
+    StripeWebhookHandler.handle_event(event)
 
     subscription =
       BlingTest.Repo.reload(subscription) |> BlingTest.Repo.preload(:subscription_items)
@@ -221,7 +221,7 @@ defmodule BlingTest.StripeWebhookHandlerTest do
       }
     }
 
-    StripeWebhookHandler.handle_event(event, BlingTest.ExampleBling)
+    StripeWebhookHandler.handle_event(event)
 
     assert BlingTest.Repo.all(BlingTest.Subscription) == []
   end
@@ -239,7 +239,7 @@ defmodule BlingTest.StripeWebhookHandlerTest do
       }
     }
 
-    StripeWebhookHandler.handle_event(event, BlingTest.ExampleBling)
+    StripeWebhookHandler.handle_event(event)
 
     subscription = BlingTest.Repo.reload(subscription)
 

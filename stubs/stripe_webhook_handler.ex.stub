@@ -1,3 +1,0 @@
-defmodule <%= @module_name %>Web.StripeWebhookHandler do
-  use Bling.StripeWebhookHandler, bling: <%= @module_name %>.Bling
-end

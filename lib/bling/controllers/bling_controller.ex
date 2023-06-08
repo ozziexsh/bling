@@ -19,6 +19,12 @@ defmodule Bling.Controllers.BlingController do
     end
   end
 
+  def setup_payment(conn, _params) do
+    intent = Bling.Customers.create_setup_intent(conn.assigns.customer)
+
+    conn |> json(%{client_secret: intent.client_secret})
+  end
+
   def store_payment_method(conn, params) do
     customer =
       conn.assigns.customer

@@ -13,9 +13,4 @@ defmodule BlingTest.Subscription do
 
     timestamps(type: :utc_datetime)
   end
-
-  defimpl Bling.Entity do
-    def repo(_), do: BlingTest.Repo
-    def bling(_), do: BlingTest.ExampleBling
-  end
 end

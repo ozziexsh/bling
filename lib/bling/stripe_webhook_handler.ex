@@ -16,14 +16,7 @@ defmodule Bling.StripeWebhookHandler do
 
   ## Usage
 
-  First make sure to create a file like `my_app_web/stripe_webhook_handler.ex`:
-
-      defmodule MyAppWeb.StripeWebhookHandler do
-        use Bling.StripeWebhookHandler, bling: MyApp.Bling
-      end
-
-
-  Then be sure to register it before the `Parsers` plug in your `endpoint.ex` file:
+  Register this module before the `Parsers` plug in your `endpoint.ex` file:
 
       defmodule MyAppWeb.Endpoint do
         # ...
@@ -31,7 +24,7 @@ defmodule Bling.StripeWebhookHandler do
         # this MUST be added right BEFORE the parser
         plug Stripe.WebhookPlug,
           at: "/webhooks/stripe",
-          handler: MyAppWeb.StripeWebhookHandler,
+          handler: Bling.StripeWebhookHandler,
           secret: {Application, :get_env, [:stripity_stripe, :webhook_secret]}
 
         # this should already be present
@@ -42,31 +35,22 @@ defmodule Bling.StripeWebhookHandler do
 
   Your config should have a webhook_secret key as well:
 
-      config :stripity_stripe, api_key: "...", public_key: "...", webhook_key: "..."
+      config :stripity_stripe, api_key: "...", public_key: "...", webhook_secret: "..."
   """
 
   alias Bling.Customers
   alias Bling.Subscriptions
 
-  defmacro __using__(opts) do
-    quote do
-      @behaviour Stripe.WebhookHandler
+  def handle_event(event) do
+    bling = Bling.bling()
 
-      @impl true
-      def handle_event(event) do
-        Bling.StripeWebhookHandler.handle_event(event, unquote(opts[:bling]))
-      end
-    end
-  end
-
-  def handle_event(event, bling) do
-    handle(event.type, event.data.object, bling)
+    handle(event.type, event.data.object)
 
     Bling.Util.maybe_call({bling, :handle_stripe_webhook_event, [event]})
   end
 
-  defp handle("customer.deleted", %Stripe.Customer{} = event, bling) do
-    customer = bling.customer_from_stripe_id(event.id)
+  defp handle("customer.deleted", %Stripe.Customer{} = event) do
+    customer = Bling.customer_from_stripe_id(event.id)
 
     if !customer do
       :ok
@@ -82,28 +66,28 @@ defmodule Bling.StripeWebhookHandler do
         payment_last_four: nil,
         payment_type: nil
       })
-      |> bling.repo().update!()
+      |> Bling.repo().update!()
 
       :ok
     end
   end
 
-  defp handle("customer.updated", %Stripe.Customer{} = event, bling) do
-    customer = bling.customer_from_stripe_id(event.id)
+  defp handle("customer.updated", %Stripe.Customer{} = event) do
+    customer = Bling.customer_from_stripe_id(event.id)
     Customers.update_default_payment_method_from_stripe(customer)
 
     :ok
   end
 
-  defp handle("customer.subscription.created", %Stripe.Subscription{} = event, bling) do
-    repo = bling.repo()
-    sub_schema = bling.subscription()
+  defp handle("customer.subscription.created", %Stripe.Subscription{} = event) do
+    repo = Bling.repo()
+    sub_schema = Bling.subscription()
     existing = repo.get_by(sub_schema, stripe_id: event.id)
 
     if existing do
       :ok
     else
-      customer = bling.customer_from_stripe_id(event.customer)
+      customer = Bling.customer_from_stripe_id(event.customer)
 
       subscription =
         customer
@@ -120,9 +104,9 @@ defmodule Bling.StripeWebhookHandler do
     end
   end
 
-  defp handle("customer.subscription.deleted", %Stripe.Subscription{} = event, bling) do
-    repo = bling.repo()
-    sub_schema = bling.subscription()
+  defp handle("customer.subscription.deleted", %Stripe.Subscription{} = event) do
+    repo = Bling.repo()
+    sub_schema = Bling.subscription()
     subscription = repo.get_by(sub_schema, stripe_id: event.id)
 
     if !subscription do
@@ -134,10 +118,10 @@ defmodule Bling.StripeWebhookHandler do
     end
   end
 
-  defp handle("customer.subscription.updated", %Stripe.Subscription{} = event, bling) do
-    repo = bling.repo()
-    sub_schema = bling.subscription()
-    sub_item_schema = bling.subscription_item()
+  defp handle("customer.subscription.updated", %Stripe.Subscription{} = event) do
+    repo = Bling.repo()
+    sub_schema = Bling.subscription()
+    sub_item_schema = Bling.subscription_item()
     subscription = repo.get_by(sub_schema, stripe_id: event.id)
 
     if !subscription do
@@ -182,13 +166,13 @@ defmodule Bling.StripeWebhookHandler do
     end
   end
 
-  defp handle("invoice.payment_action_required", %Stripe.Invoice{} = _invoice, _bling) do
+  defp handle("invoice.payment_action_required", %Stripe.Invoice{} = _invoice) do
     :ok
   end
 
-  defp handle("invoice.payment.failed", %Stripe.Invoice{} = _invoice, _bling) do
+  defp handle("invoice.payment.failed", %Stripe.Invoice{} = _invoice) do
     :ok
   end
 
-  defp handle(_event_name, _event_object, _bling), do: :ok
+  defp handle(_event_name, _event_object), do: :ok
 end
