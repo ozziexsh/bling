@@ -4,7 +4,6 @@ defmodule Bling.Subscriptions do
   as the first argument, and will return the updated subscription with subscription items preloaded.
   """
 
-  alias Bling.Entity
   import Ecto.Changeset, only: [change: 2]
 
   @default_plan "default"
@@ -13,7 +12,7 @@ defmodule Bling.Subscriptions do
   Returns all of the database subscription items for a subscription.
   """
   def subscription_items(subscription) do
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
 
     subscription |> repo.preload(:subscription_items) |> Map.get(:subscription_items, [])
   end
@@ -103,7 +102,7 @@ defmodule Bling.Subscriptions do
   def add_prices(subscription, opts) do
     prices = Keyword.get(opts, :prices, [])
     stripe_params = stripe_params(opts)
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
 
     prices
     |> Enum.map(fn {price, quantity} ->
@@ -143,7 +142,7 @@ defmodule Bling.Subscriptions do
   """
   def remove_prices(subscription, opts) do
     prices = Keyword.get(opts, :prices, [])
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
     stripe_params = stripe_params(opts)
     items = subscription_items(subscription)
     remaining_items = Enum.count(items) - Enum.count(prices)
@@ -171,7 +170,7 @@ defmodule Bling.Subscriptions do
   """
   def change_prices(subscription, opts \\ []) do
     prices = Keyword.get(opts, :prices, [])
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
     subscription_items = subscription_items(subscription)
 
     new_items =
@@ -234,7 +233,7 @@ defmodule Bling.Subscriptions do
 
   @doc false
   def mark_as_cancelled(subscription) do
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
 
     subscription
     |> change(%{
@@ -262,7 +261,7 @@ defmodule Bling.Subscriptions do
 
     {:ok, stripe_subscription} = Stripe.Subscription.update(subscription.stripe_id, params)
 
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
 
     ends_at =
       if trial?(subscription) do
@@ -297,7 +296,7 @@ defmodule Bling.Subscriptions do
 
     {:ok, stripe_subscription} = Stripe.Subscription.update(subscription.stripe_id, params)
 
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
 
     subscription
     |> change(%{
@@ -349,7 +348,7 @@ defmodule Bling.Subscriptions do
       subscription = delete(subscription, stripe: %{ invoice_now: true })
   """
   def delete(subscription, opts \\ []) do
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
     stripe_params = stripe_params(opts)
     stripe_id = subscription.stripe_id
 
@@ -382,7 +381,7 @@ defmodule Bling.Subscriptions do
 
     {:ok, stripe_subscription} = Stripe.Subscription.update(subscription.stripe_id, params)
 
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
 
     subscription
     |> change(%{
@@ -502,7 +501,7 @@ defmodule Bling.Subscriptions do
     quantity = Keyword.get(opts, :quantity, 1)
     price_id = Keyword.get(opts, :price_id, nil)
     stripe_params = stripe_params(opts)
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
 
     item =
       subscription_items(subscription)
@@ -624,7 +623,7 @@ defmodule Bling.Subscriptions do
   defp stripe_params(opts), do: opts |> Keyword.get(:stripe, []) |> build_opts()
 
   defp reload_with_items(subscription) do
-    repo = Entity.repo(subscription)
+    repo = Bling.repo()
 
     subscription |> repo.reload() |> repo.preload(:subscription_items)
   end

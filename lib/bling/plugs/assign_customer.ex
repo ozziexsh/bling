@@ -5,10 +5,10 @@ defmodule Bling.Plugs.AssignCustomer do
 
   def call(conn, _opts) do
     %{"customer_type" => customer_type, "customer_id" => customer_id} = conn.params
-    bling = conn.assigns.bling
-    repo = bling.repo()
+    bling = Bling.bling()
+    repo = Bling.repo()
 
-    with schema when not is_nil(schema) <- bling.module_from_customer_type(customer_type),
+    with schema when not is_nil(schema) <- Bling.module_from_customer_type(customer_type),
          customer when not is_nil(customer) <- repo.get_by(schema, id: customer_id),
          {:auth, true} <-
            {:auth, Bling.Util.maybe_call({bling, :can_manage_billing?, [conn, customer]}, false)},
