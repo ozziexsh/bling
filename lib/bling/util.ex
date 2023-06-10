@@ -12,7 +12,7 @@ defmodule Bling.Util do
   def maybe_call({mod, fun, args}, default) do
     arity = Enum.count(args)
 
-    if Kernel.function_exported?(mod, fun, arity) do
+    if Code.ensure_loaded?(mod) and Kernel.function_exported?(mod, fun, arity) do
       apply(mod, fun, args)
     else
       default

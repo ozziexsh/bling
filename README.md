@@ -67,7 +67,7 @@ end
 Configure stripe:
 
 ```elixir
-config :stripity_stripe, api_key: "...", public_key: "...", webhook_key: "..."
+config :stripity_stripe, api_key: "...", public_key: "...", webhook_secret: "..."
 ```
 
 Run the install task. This will generate:
