@@ -42,7 +42,7 @@ defmodule Bling.MixProject do
       {:ex_doc, "~> 0.29.4"},
       {:ecto_sql, "~> 3.6"},
       {:phoenix, "~> 1.7.2"},
-      {:phoenix_live_view, "~> 0.18.16"},
+      {:phoenix_live_view, "~> 0.20"},
       {:plug, "~> 1.14"},
       {:stripity_stripe, "~> 2.17"},
       {:postgrex, ">= 0.0.0", only: :test},
