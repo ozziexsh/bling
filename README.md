@@ -58,7 +58,7 @@ Add the module to your dependencies:
 ```elixir
 def deps do
   [
-    {:bling, "~> 0.3.0"},
+    {:bling, "~> 0.4.0"},
     {:stripity_stripe, "~> 2.17"}
   ]
 end
