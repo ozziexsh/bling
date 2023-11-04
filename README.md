@@ -1,6 +1,6 @@
 # Bling
 
-> If you'd like a ready-to-go interface for adding subscriptions to your Phoenix applications, check out the paid product [Bankroll](https://bankroll.ozzie.sh) which is built on top of this library.
+> If you'd like a ready-to-go interface for adding subscriptions to your Phoenix applications, check out the free product [Bankroll](https://github.com/ozziexsh/bankroll) which is built on top of this library.
 
 `Bling` gives you an easy way to manage common billing scenarios in your own phoenix app through Stripe, making it a breeze to build custom subscription flows.
 
