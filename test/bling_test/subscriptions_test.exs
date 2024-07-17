@@ -210,6 +210,25 @@ defmodule BlingTest.SubscriptionsTest do
     assert Customers.subscription(user, plan: "extra") == extra_subscription
   end
 
+  test "single subscription, free forever coupon" do
+    user = create_customer() |> with_valid_card()
+
+    {:ok, coupon} =
+      Stripe.Coupon.create(%{duration: :forever, percent_off: 100.0})
+
+    {:ok, subscription} =
+      Customers.create_subscription(user,
+        prices: [{price_id(:plus_monthly), 1}],
+        return_url: @return_url,
+        stripe: %{ coupon: coupon.id }
+      )
+
+    assert Enum.count(Repo.all(Subscription)) == 1
+    assert Enum.count(Repo.all(SubscriptionItem)) == 1
+
+    assert_recurring_subscription(subscription)
+  end
+
   # test incomplete subscriptions
 
   defp assert_recurring_subscription(subscription) do

@@ -427,6 +427,8 @@ defmodule Bling.Customers do
     session.url
   end
 
+  defp maybe_confirm(%{latest_invoice: %{payment_intent: nil}}, _return_url), do: {:ok, nil}
+
   defp maybe_confirm(%{status: "incomplete"} = stripe_subscription, return_url) do
     Stripe.PaymentIntent.confirm(stripe_subscription.latest_invoice.payment_intent, %{
       return_url: return_url
