@@ -332,10 +332,13 @@ if (error) {
   return;
 }
 
-const response = await fetch({
-  method: 'post',
-  url: '/billing/user/1/payment-method',
+const response = await fetch(`/billing/user/1/payment-method`, {
+  method: "post",
   body: JSON.stringify({ payment_method_id: setupIntent.payment_method }),
+  headers: {
+    "X-CSRF-Token": csrfToken,
+    "Content-Type": "application/json",
+  },
 });
 ```
 
