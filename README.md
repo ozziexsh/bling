@@ -316,6 +316,12 @@ You'll then want to forward `intent.client_secret` to your frontend's payment el
 
 Upon submitting your setup form you can POST the payment method ID to the billing url to save it to the customer. The billing URL will depend on what you registered in your routes file and the customer type.
 
+You will need to include Stripe if you haven't already.
+
+```html
+<script phx-track-static src="https://js.stripe.com/v3/"></script>
+```
+
 ```javascript
 const { error, setupIntent } = await stripe.confirmSetup({
   elements,
