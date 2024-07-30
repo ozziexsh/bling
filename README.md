@@ -224,7 +224,6 @@ You should also implement these methods in your `MyApp.Bling` module to extend f
 - `def handle_stripe_webhook_event(%Stripe.Event{} = event)`
   - handle your own stripe webhook events.
 
-
 ## The "finalize" route
 
 The finalize route is used to resolve payment and setup issues. It was registered during the installation steps above.
