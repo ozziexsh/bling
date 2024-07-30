@@ -209,13 +209,13 @@ MyApp.Accounts.User = Bling.module_from_customer_type("user")
 
 ## Project Bling module
 
-You will need to implement this method:
+You will need to implement this method in your `MyApp.Bling` module:
 
 - `def can_manage_billing?(conn, customer)`
   - by default returns false, and all requests are unauthorized
   - you will want to return true if the current user (derive it yourself from `conn`) can access the billing routes for the given `customer`.
 
-You should also implement these methods in your `MyApp.Bling` module to extend functionality:
+You should also implement these methods to extend functionality:
 
 - `def to_stripe_params(customer)`
   - return a map of valid `Stripe.Customer.create/2` params to create/update the customer with.
