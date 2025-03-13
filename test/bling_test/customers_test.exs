@@ -17,17 +17,14 @@ defmodule BlingTest.CustomersTest do
     assert payment_method == nil
 
     {:ok, method} =
-      Stripe.PaymentMethod.attach(%{customer: user.stripe_id, payment_method: "pm_card_visa"})
+      Stripe.PaymentMethod.attach("pm_card_visa", %{customer: user.stripe_id})
 
     user = Customers.update_default_payment_method(user, method.id)
     payment_method = Customers.default_payment_method(user)
     assert %Bling.PaymentMethod{} = payment_method
 
     {:ok, method} =
-      Stripe.PaymentMethod.attach(%{
-        customer: user.stripe_id,
-        payment_method: "pm_card_mastercard"
-      })
+      Stripe.PaymentMethod.attach("pm_card_mastercard", %{customer: user.stripe_id})
 
     Stripe.Customer.update(user.stripe_id, %{
       invoice_settings: %{default_payment_method: method.id}
