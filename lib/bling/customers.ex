@@ -422,7 +422,7 @@ defmodule Bling.Customers do
 
     params = Map.merge(stripe_params, default_params)
 
-    {:ok, %Stripe.Session{} = session} = Stripe.Session.create(params)
+    {:ok, %Stripe.Checkout.Session{} = session} = Stripe.Checkout.Session.create(params)
 
     session.url
   end
