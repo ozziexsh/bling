@@ -387,7 +387,7 @@ defmodule Bling.Customers do
   ## Examples
       url = subscription_checkout_url(customer,
         plan: "default",
-        prices: [{price_id, quantity}]
+        prices: [{price_id, quantity}],
         stripe: %{
           cancel_url: "http://localhost:4000/users/settings",
           success_url: "http://localhost:4000/users/settings"
