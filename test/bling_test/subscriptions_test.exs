@@ -220,7 +220,7 @@ defmodule BlingTest.SubscriptionsTest do
       Customers.create_subscription(user,
         prices: [{price_id(:plus_monthly), 1}],
         return_url: @return_url,
-        stripe: %{ coupon: coupon.id }
+        stripe: %{coupon: coupon.id}
       )
 
     assert Enum.count(Repo.all(Subscription)) == 1

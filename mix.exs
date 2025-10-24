@@ -4,7 +4,7 @@ defmodule Bling.MixProject do
   def project do
     [
       app: :bling,
-      version: "0.4.1",
+      version: "0.5.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -40,11 +40,11 @@ defmodule Bling.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.29.4"},
-      {:ecto_sql, "~> 3.6"},
-      {:phoenix, "~> 1.7.2"},
-      {:phoenix_live_view, "~> 0.20"},
-      {:plug, "~> 1.14"},
-      {:stripity_stripe, "~> 2.17"},
+      {:ecto_sql, "~> 3.13"},
+      {:phoenix, "~> 1.8.0"},
+      {:phoenix_live_view, "~> 1.1.0"},
+      {:plug, "~> 1.18"},
+      {:stripity_stripe, "~> 3.2.0"},
       {:postgrex, ">= 0.0.0", only: :test},
       {:faker, "~> 0.17", only: :test},
       {:jason, "~> 1.4"}

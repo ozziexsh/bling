@@ -314,12 +314,12 @@ defmodule Bling.Subscriptions do
   ## Examples
       subscription = cancel_now(subscription)
 
-      # can pass any valid Stripe.Subscription.delete/2 params
+      # can pass any valid Stripe.Subscription.cancel/2 params
       subscription = cancel_now(subscription, stripe: %{ invoice_now: true })
   """
   def cancel_now(subscription, opts \\ []) do
     {:ok, _stripe_subscription} =
-      Stripe.Subscription.delete(subscription.stripe_id, stripe_params(opts))
+      Stripe.Subscription.cancel(subscription.stripe_id, stripe_params(opts))
 
     mark_as_cancelled(subscription)
   end
@@ -344,7 +344,7 @@ defmodule Bling.Subscriptions do
   ## Examples
       subscription = delete(subscription)
 
-      # can pass any valid Stripe.Subscription.delete/2 params
+      # can pass any valid Stripe.Subscription.cancel/2 params
       subscription = delete(subscription, stripe: %{ invoice_now: true })
   """
   def delete(subscription, opts \\ []) do
@@ -357,7 +357,7 @@ defmodule Bling.Subscriptions do
 
     repo.delete!(subscription)
 
-    Stripe.Subscription.delete(stripe_id, stripe_params)
+    Stripe.Subscription.cancel(stripe_id, stripe_params)
   end
 
   @doc """

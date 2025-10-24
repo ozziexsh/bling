@@ -33,14 +33,14 @@ defmodule BlingTest.RepoCase do
 
   def with_valid_card(customer) do
     {:ok, method} =
-      Stripe.PaymentMethod.attach(%{customer: customer.stripe_id, payment_method: "pm_card_visa"})
+      Stripe.PaymentMethod.attach("pm_card_visa", %{customer: customer.stripe_id})
 
     Bling.Customers.update_default_payment_method(customer, method.id)
   end
 
   def with_default_card_in_stripe_only(customer) do
     {:ok, method} =
-      Stripe.PaymentMethod.attach(%{customer: customer.stripe_id, payment_method: "pm_card_visa"})
+      Stripe.PaymentMethod.attach("pm_card_visa", %{customer: customer.stripe_id})
 
     Stripe.Customer.update(customer.stripe_id, %{
       invoice_settings: %{default_payment_method: method.id}
