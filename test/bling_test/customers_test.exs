@@ -25,7 +25,7 @@ defmodule BlingTest.CustomersTest do
 
     {:ok, method} =
       Stripe.PaymentMethod.attach("pm_card_mastercard", %{
-        customer: user.stripe_id,
+        customer: user.stripe_id
       })
 
     Stripe.Customer.update(user.stripe_id, %{
